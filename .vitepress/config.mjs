@@ -5,6 +5,7 @@ import { getThemeConfig } from '@sugarat/theme/node'
 export default defineConfig({
   title: "映星湖的博客",
   description: "有趣是最大的价值",
+  ignoreDeadLinks: true,
   extends: getThemeConfig({
     blog: {
       themeColor: 'vp-default', // 可以选喜欢的颜色
