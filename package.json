@@ -1,0 +1,13 @@
+{
+  "scripts": {
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "preview": "vitepress preview"
+  },
+  "dependencies": {
+    "@sugarat/theme": "^0.5.17"
+  },
+  "devDependencies": {
+    "sass-embedded": "^1.99.0"
+  }
+}
