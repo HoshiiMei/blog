@@ -45,10 +45,14 @@ const { posts, click = null } = defineProps<{
   click?: (tag: string) => void
 }>()
 
+const imageMap = import.meta.glob('/posts/**/images/*.{png,jpg,webp}', { eager: true, query: '?url', import: 'default' })
+
 function coverStyle(p: PostData) {
   if (!p.cover) return ''
   const dir = p.href.replace(/\.html$/, '')
-  return `background-image: url(${base}${dir}/${p.cover})`
+  const url = imageMap[`/${dir}/${p.cover}`] as string
+  if (url) return `background-image: url(${url})`
+  return ''
 }
 </script>
 

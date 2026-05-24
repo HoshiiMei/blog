@@ -54,6 +54,7 @@ const tags = ref<string[]>([])
 const view = ref(0)
 const cover = ref('')
 const active = ref(0)
+const imageMap = import.meta.glob('/posts/**/images/*.{png,jpg,webp}', { eager: true, query: '?url', import: 'default' })
 const waline = ref<InstanceType<typeof Waline>>()
 const nav = reactive([
   { href: '', text: '', show: true },
@@ -66,7 +67,14 @@ const update = () => {
   if (index.value == -1) return
   title.value = data.page.value.title
   tags.value = data.page.value.frontmatter.tags || []
-  cover.value = `background-image: url(${data.page.value.frontmatter.cover || data.theme.value.cover})`
+  const frontCover = data.page.value.frontmatter.cover
+  if (frontCover) {
+    const pagePath = posts[index.value].href.replace(/\.html$/, '')
+    const resolved = imageMap[`/${pagePath}/${frontCover}`] as string
+    cover.value = `background-image: url(${resolved || data.theme.value.cover})`
+  } else {
+    cover.value = `background-image: url(${data.theme.value.cover})`
+  }
   date.value = new Date(data.page.value.lastUpdated || posts[index.value].create).toLocaleDateString('sv-SE')
   waline.value?.update()
   let ival = index.value
