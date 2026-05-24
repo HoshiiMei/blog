@@ -1,13 +1,21 @@
 {
+  "name": "hoshii-vitepress-site",
+  "version": "1.0.0",
+  "type": "module",
   "scripts": {
     "dev": "vitepress dev",
     "build": "vitepress build",
     "preview": "vitepress preview"
   },
   "dependencies": {
-    "@sugarat/theme": "^0.5.17"
+    "@fortawesome/fontawesome-free": "^7.2.0",
+    "feed": "^4.2.2",
+    "gray-matter": "^4.0.3"
   },
   "devDependencies": {
-    "sass-embedded": "^1.99.0"
+    "sass": "^1.99.0",
+    "sass-embedded": "^1.99.0",
+    "vitepress": "latest",
+    "vue": "latest"
   }
 }

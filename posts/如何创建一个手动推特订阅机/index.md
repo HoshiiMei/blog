@@ -1,8 +1,13 @@
 ---
 title: "如何创建一个手动推特订阅机"
 date: 2026-03-19
-categories: 
-  - "ai-and-robot-construction"
+cover: images/1773902097-image-1024x641.png
+tags: ["ai-and-robot-construction"]
+---
+---
+
+一次简单的rsshub与qq机器人尝试
+
 ---
 
 <figure>
