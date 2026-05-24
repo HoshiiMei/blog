@@ -10,23 +10,62 @@
       <div class="divider"></div>
 
       <div class="icons-group">
-        <button class="icon-btn search" title="搜索">
+        <button class="icon-btn search" title="搜索" @click="openSearch">
           <i class="fa fa-search"></i>
         </button>
-        <button class="icon-btn dice" title="随机">
+        <button class="icon-btn dice" title="随机" @click="goRandom">
           <i class="fa fa-dice"></i>
         </button>
       </div>
     </nav>
 
     <div class="profile-avatar">
-      <img src="/images/avatar.png" alt="用户头像" />
+      <img src="/images/avatar.webp" alt="用户头像" />
     </div>
+
+    <!-- 搜索弹窗 -->
+    <Teleport to="body">
+      <Transition name="search-fade">
+        <div v-if="searchVisible" class="search-overlay" @click.self="closeSearch">
+          <div class="search-modal">
+            <div class="search-bar">
+              <i class="fa fa-search"></i>
+              <input
+                ref="searchInput"
+                v-model="query"
+                type="text"
+                placeholder="搜索文章..."
+                @keydown.escape="closeSearch"
+                @keydown.enter="goFirst"
+              />
+              <button v-if="query" class="clear-btn" @click="query = ''">
+                <i class="fa fa-times"></i>
+              </button>
+            </div>
+            <div class="search-results" v-if="query">
+              <a
+                v-for="p in results"
+                :key="p.href"
+                :href="base + p.href"
+                class="result-item"
+                @click="closeSearch"
+              >
+                <span class="result-title">{{ p.title }}</span>
+                <span class="result-date">{{ new Date(p.create).toLocaleDateString('sv-SE') }}</span>
+              </a>
+              <div v-if="results.length === 0" class="no-results">无匹配结果</div>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </header>
 </template>
 
 <script setup lang="ts">
-import { withBase } from 'vitepress'
+import { withBase, useData } from 'vitepress'
+import { ref, computed, nextTick } from 'vue'
+import { data as posts } from '../posts.data'
 
 interface MenuItem { name: string, url: string }
 
@@ -34,6 +73,45 @@ const menu: MenuItem[] = [
   { name: '首页', url: '/' },
   { name: '标签', url: '/tags/' },
 ]
+
+const base = useData().site.value.base
+
+// 搜索
+const searchVisible = ref(false)
+const query = ref('')
+const searchInput = ref<HTMLInputElement>()
+
+const results = computed(() => {
+  const q = query.value.trim().toLowerCase()
+  if (!q) return []
+  return posts
+    .filter(p => p.title.toLowerCase().includes(q))
+    .slice(0, 8)
+})
+
+function openSearch() {
+  searchVisible.value = true
+  query.value = ''
+  nextTick(() => searchInput.value?.focus())
+}
+
+function closeSearch() {
+  searchVisible.value = false
+}
+
+function goFirst() {
+  if (results.value.length > 0) {
+    window.location.href = base + results.value[0].href
+    closeSearch()
+  }
+}
+
+// 随机
+function goRandom() {
+  if (posts.length === 0) return
+  const i = Math.floor(Math.random() * posts.length)
+  window.location.href = base + posts[i].href
+}
 </script>
 
 <style lang="scss">
@@ -48,7 +126,6 @@ header.integrated-header {
   background: transparent;
   z-index: 100;
 
-  /* 圆角卡片式导航栏 */
   .pill-bar {
     display: flex;
     align-items: center;
@@ -56,9 +133,9 @@ header.integrated-header {
     border-radius: 24px;
     height: 48px;
     padding: 0 15px;
-    backdrop-filter: blur(8px); /* 背景模糊效果 */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 微妙的阴影 */
-    margin-right: 12px; /* 给右侧头像留出间距 */
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-right: 12px;
 
     .menu-list {
       margin: 0;
@@ -78,7 +155,7 @@ header.integrated-header {
     .menu-link {
       font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", "SimSun", "Times New Roman", serif;
       font-size: 16px;
-      color: #333; /* 用具体颜色替换变量 */
+      color: #333;
       display: inline-block;
       text-decoration: none;
       padding: 6px 14px;
@@ -93,9 +170,9 @@ header.integrated-header {
 
     .divider {
       margin: 0 10px;
-      height: 18px; /* 控制竖线的高度 */
-      width: 1px;   /* 控制竖线的粗细 */
-      background-color: var(--color-border); /* 竖线的颜色 */
+      height: 18px;
+      width: 1px;
+      background-color: var(--color-border);
     }
 
     .icons-group {
@@ -104,11 +181,10 @@ header.integrated-header {
     }
 
     .icon-btn {
-      background: transparent; /* 清除默认灰色背景 */
-      border: none;            /* 清除默认边框 */
-      padding: 0;              /* 清除默认内边距 */
-      outline: none;           /* 去除点击时的黑框 */
-
+      background: transparent;
+      border: none;
+      padding: 0;
+      outline: none;
       margin-left: 10px;
       cursor: pointer;
       color: #333;
@@ -121,7 +197,6 @@ header.integrated-header {
     }
   }
 
-  /* 独立头像样式 */
   .profile-avatar {
     width: 48px;
     height: 48px;
@@ -141,4 +216,104 @@ header.integrated-header {
     }
   }
 }
+
+/* ===== 搜索弹窗 ===== */
+.search-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  padding-top: 15vh;
+}
+
+.search-modal {
+  width: 520px;
+  max-width: 90vw;
+  align-self: flex-start;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 12px;
+  padding: 0 16px;
+  height: 48px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+
+  .fa-search {
+    color: var(--color-gray);
+    margin-right: 10px;
+    font-size: 16px;
+  }
+
+  input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    font-family: var(--global-font);
+    color: var(--color-text);
+    &::placeholder { color: #aaa; }
+  }
+
+  .clear-btn {
+    background: none;
+    border: none;
+    color: #999;
+    cursor: pointer;
+    padding: 4px;
+    font-size: 14px;
+    &:hover { color: #333; }
+  }
+}
+
+.search-results {
+  margin-top: 8px;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+}
+
+.result-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  transition: background 0.15s;
+  text-decoration: none;
+
+  &:hover {
+    background: #f5f5f5;
+  }
+
+  .result-title {
+    color: var(--color-text);
+    font-size: 15px;
+  }
+
+  .result-date {
+    color: var(--color-gray);
+    font-size: 13px;
+    flex-shrink: 0;
+    margin-left: 12px;
+  }
+}
+
+.no-results {
+  padding: 24px;
+  text-align: center;
+  color: var(--color-gray);
+  font-size: 14px;
+}
+
+/* 搜索弹窗动画 */
+.search-fade-enter-active { transition: opacity 0.2s ease; }
+.search-fade-leave-active { transition: opacity 0.15s ease; }
+.search-fade-enter-from,
+.search-fade-leave-to { opacity: 0; }
 </style>

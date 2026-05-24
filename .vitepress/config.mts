@@ -5,6 +5,7 @@ export default defineConfig({
   description: "",
   base: '/',
   ignoreDeadLinks: true,
+  appearance: false,
   vite: {
     css: {
       preprocessorOptions: {

@@ -29,7 +29,6 @@ const cover = themeConfig.cover
 </script>
 
 <style lang="scss">
-@use "./base.scss" as *;
 
 .banner {
   background-size: cover;
@@ -44,20 +43,22 @@ const cover = themeConfig.cover
   .wave1,
   .wave2 {
     position: absolute;
-    width: 400%;
+    width: 100%;
     bottom: 0;
   }
 
   .wave1 {
-    background: url($theme-base+"assets/wave1.png") repeat-x;
     height: 65px;
-    animation: wave-animation-1 30s infinite linear;
+    background: url(./assets/wave1.png) repeat-x;
+    background-size: auto 65px;
+    animation: wave-scroll-1 30s infinite linear;
   }
 
   .wave2 {
-    background: url($theme-base+"assets/wave2.png") repeat-x;
     height: 80px;
-    animation: wave-animation-2 20s infinite linear;
+    background: url(./assets/wave2.png) repeat-x;
+    background-size: auto 80px;
+    animation: wave-scroll-2 20s infinite linear;
   }
 
   .info {
@@ -121,24 +122,14 @@ const cover = themeConfig.cover
   }
 }
 
-@keyframes wave-animation-1 {
-  0% {
-    left: 0;
-  }
-
-  100% {
-    left: -50%;
-  }
+@keyframes wave-scroll-1 {
+  0% { background-position-x: 0; }
+  100% { background-position-x: -997px; }
 }
 
-@keyframes wave-animation-2 {
-  0% {
-    left: 0;
-  }
-
-  100% {
-    left: -50%;
-  }
+@keyframes wave-scroll-2 {
+  0% { background-position-x: 0; }
+  100% { background-position-x: -1009px; }
 }
 
 //向下滚动提示（目前被弃用）

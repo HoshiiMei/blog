@@ -67,6 +67,7 @@ body {
   font-family: var(--global-font);
   font-size: 16px;
   overflow-x: hidden;
+  color: var(--color-text);
   background-color: var(--color-background);
 }
 
