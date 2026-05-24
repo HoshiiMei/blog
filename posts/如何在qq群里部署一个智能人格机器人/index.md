@@ -1,6 +1,7 @@
 ---
 title: "如何在QQ群里部署一个智能人格机器人"
 date: 2026-04-11
+cover: images/1775700815-image-1024x728.webp
 categories: 
   - "ai-and-robot-construction"
 ---

@@ -1,8 +1,9 @@
 ---
 title: "基于mip22和ngrok的钓鱼网站制作尝试"
 date: 2026-03-06
+cover: images/1772784947-image-724x1024.webp
 categories: 
-  - "cybersecurity"
+  - "cybersecurity"  
 ---
 
 <figure>
