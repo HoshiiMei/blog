@@ -1,7 +1,7 @@
 ---
 title: "如何创建一个手动推特订阅机"
 date: 2026-03-19
-cover: images/1773902097-image-1024x641.png
+cover: images/1773902097-image-1024x641.webp
 tags: ["ai-and-robot-construction"]
 ---
 ---
@@ -12,7 +12,7 @@ tags: ["ai-and-robot-construction"]
 
 <figure>
 
-![](images/1773902097-image-1024x641.png)
+![](images/1773902097-image-1024x641.webp)
 
 <figcaption>
 
@@ -52,7 +52,7 @@ RSS是一个可以让你订阅各种感兴趣的网站内容，并且第一时�
 
 第一是平台消息推送，如果你想要获得up主的更新通知，就得打开B站的通知权限，就我个人而言我对垃圾消息的容忍度几乎为0，我希望每次手机有消息都是因为有一些要处理的正经事，而不是在各种各样莫名其妙的广告中翻找一条有用的信息
 
-![](images/1773845255-未标题-3-1024x546.png)
+![](images/1773845255-未标题-3-1024x546.webp)
 
 第二是信息推荐算法，很多时候我们可能只是想看自己关注的up最新视频，但是看到首页的推送就刷起来了，不知不觉就过了几个小时，最后甚至连本来想看的视频都忘了看
 
@@ -64,7 +64,7 @@ RSS能做到的，就是干净利落地获取订阅用户的最新内容，并�
 
 <figure>
 
-![](images/1773847576-image-1024x651.png)
+![](images/1773847576-image-1024x651.webp)
 
 <figcaption>
 
@@ -82,7 +82,7 @@ Vercel部署RSSHub的流程非常简单，先Fork一份代码到自己的仓库�
 
 <figure>
 
-![](images/1773886800-image-1024x741.png)
+![](images/1773886800-image-1024x741.webp)
 
 <figcaption>
 
@@ -94,7 +94,7 @@ Vercel部署RSSHub的流程非常简单，先Fork一份代码到自己的仓库�
 
 不过到这一步还没法立即使用，现在直接去爬RSS的话，大概率会看到下图
 
-![](images/1773887012-image-1024x645.png)
+![](images/1773887012-image-1024x645.webp)
 
 这是因为触发了官方平台的”未登陆访客限流“或反爬虫风控，需要把自己的身份认证(Auth Token / Cookie)配置到RSSHub
 
@@ -104,7 +104,7 @@ Vercel部署RSSHub的流程非常简单，先Fork一份代码到自己的仓库�
 
 <figure>
 
-![](images/1773889620-image-1024x547.png)
+![](images/1773889620-image-1024x547.webp)
 
 <figcaption>
 
@@ -148,7 +148,7 @@ npm config set https-proxy http://127.0.0.1:代理端口_
 
 <figure>
 
-![](images/1773894926-image.png)
+![](images/1773894926-image.webp)
 
 <figcaption>
 
@@ -174,23 +174,23 @@ Koishi官网：[Koishi](https://koishi.chat/zh-CN/)
 
 首先对于Koishi，需要下载插件市场里面提供OneBot支持的插件adapter-onebot，下载之后会看到下图的界面
 
-![](images/1773897217-image-1024x562.png)
+![](images/1773897217-image-1024x562.webp)
 
 机器人账号填写要当作机器人的QQ号（建议使用小号），token保持无填充就可以，协议选择ws-reverse，这个的意思是Koishi作为服务端等待OneBot传输消息，是相对主流的方案。path里面有一个自动填充的/onebot，不用修改
 
 然后打开LLOneBot的OneBot协议界面：
 
-![](images/1773897468-image-1024x469.png)
+![](images/1773897468-image-1024x469.webp)
 
 启用WebSocket反向，不要启动其他的东西，这样协议才会保持一致，连接地址填写ws://127.0.0.1:5140/onebot，这里的5140是Koishi的默认本地端口，/onebot就是Koishi里面的path，如果连接成功，Koishi右下角的QQ账号会显示一个小绿点
 
-![](images/1773897638-image.png)
+![](images/1773897638-image.webp)
 
 我们可以安装一个简单的插件测试一下，比如echo插件，可以让机器人复读你发过去的一句话
 
 <figure>
 
-![](images/1773898412-image-1024x283.png)
+![](images/1773898412-image-1024x283.webp)
 
 <figcaption>
 

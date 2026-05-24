@@ -15,6 +15,7 @@
   "devDependencies": {
     "sass": "^1.99.0",
     "sass-embedded": "^1.99.0",
+    "sharp": "^0.34.5",
     "vitepress": "latest",
     "vue": "latest"
   }

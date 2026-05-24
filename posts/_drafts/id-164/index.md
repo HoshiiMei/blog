@@ -37,7 +37,7 @@ _本文内容仅为个人的学习体会与浅见，如有疏漏或不妥之处�
 
 <figure>
 
-![](images/1776565285-IMG_6549.jpg)
+![](images/1776565285-IMG_6549.webp)
 
 <figcaption>
 
