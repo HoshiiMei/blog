@@ -51,7 +51,7 @@ function getPost(md, file, postDir, asFeed = false) {
   }
 
   const src = fs.readFileSync(fullePath, 'utf-8')
-  const { data, excerpt } = matter(src, { excerpt: true })
+  const { data } = matter(src)
 
   if (!data.title) return null
 
@@ -65,8 +65,9 @@ function getPost(md, file, postDir, asFeed = false) {
     create: +new Date(data.date) || timestamp,
     update: timestamp,
     tags: data.tags,
+    dir: path.dirname(file),
     cover: data.cover,
-    excerpt: md.render(excerpt)
+    excerpt: data.excerpt ? md.render(data.excerpt) : ''
   }
   if (asFeed) {
     post.data = data

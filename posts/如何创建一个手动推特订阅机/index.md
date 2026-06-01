@@ -1,14 +1,12 @@
 ---
 title: "如何创建一个手动推特订阅机"
+author: 映星湖
 date: 2026-03-19
 cover: images/1773902097-image-1024x641.webp
 tags: ["ai-and-robot-construction"]
----
+excerpt: "一次简单的rsshub与qq机器人尝试"
 ---
 
-一次简单的rsshub与qq机器人尝试
-
----
 
 <figure>
 

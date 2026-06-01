@@ -1,32 +1,33 @@
 <template>
-  <div class="abanner" :style="cover" v-if="index >= 0">
-    <div class="titlebox">
-      <h1 class="title">{{ title }}</h1>
-      <div class="info">{{ author }} · 更新于 {{ date }} · {{ view }} 次阅读</div>
-      <div class="tags" v-if="tags.length">
-        <a v-for="t in tags" :href="`${base}tags/?q=${t}`">
+  <div class="abanner" :style="cover" v-if="isPost" />
+  <div class="article">
+    <div class="article-header">
+      <h1 class="article-title">{{ data.page.value.title }}</h1>
+      <div class="article-meta">
+        @{{ data.page.value.frontmatter.author || data.theme.value.name }} · 发布于 {{ date }}
+      </div>
+      <div class="article-tags" v-if="data.page.value.frontmatter.tags?.length">
+        <a v-for="t in data.page.value.frontmatter.tags" :href="`${base}tags/?q=${t}`">
           <i class="fa fa-tag"></i> {{ t }}
         </a>
       </div>
     </div>
-  </div>
-  <div class="article">
     <Content class="content" />
     <div class="content nav">
       <span>
-        <a :href="nav[0].href" v-if="nav[0].show">
+        <a :href="prevPost?.href" v-if="prevPost">
           <i class="fa fa-angle-left"></i>
-          {{ nav[0].text }}
+          {{ prevPost.text }}
         </a>
       </span>
       <span>
-        <a :href="nav[1].href" v-if="nav[1].show">
-          {{ nav[1].text }}
+        <a :href="nextPost?.href" v-if="nextPost">
+          {{ nextPost.text }}
           <i class="fa fa-angle-right"></i>
         </a>
       </span>
     </div>
-    <Waline v-if="index != -1" ref="waline" />
+    <Waline v-if="isPost" ref="waline" />
     <TOC :data="data.page.value.headers" :active="active" />
   </div>
 </template>
@@ -38,7 +39,7 @@ declare const katex: any;
 
 <script setup lang="ts">
 import { useData, useRoute } from 'vitepress'
-import { onMounted, onUnmounted, ref, reactive, watch, nextTick } from 'vue'
+import { onMounted, onUnmounted, ref, computed, watch, nextTick } from 'vue'
 import { data as posts } from '../posts.data'
 import { throttleAndDebounce } from './utils'
 import Waline from './Waline.vue'
@@ -47,60 +48,60 @@ import TOC from './TOC.vue'
 const data = useData()
 const base = data.site.value.base
 const route = useRoute()
-const title = ref('')
-const author = data.theme.value.name
-const date = ref('')
-const tags = ref<string[]>([])
-const view = ref(0)
-const cover = ref('')
 const active = ref(0)
 const imageMap = import.meta.glob('/posts/**/images/*.{png,jpg,webp}', { eager: true, query: '?url', import: 'default' })
 const waline = ref<InstanceType<typeof Waline>>()
-const nav = reactive([
-  { href: '', text: '', show: true },
-  { href: '', text: '', show: true },
-])
 
-const index = ref(0)
-const update = () => {
-  index.value = posts.findIndex(p => p.href == route.path.replace(base, ''))
-  if (index.value == -1) return
-  title.value = data.page.value.title
-  tags.value = data.page.value.frontmatter.tags || []
-  const frontCover = data.page.value.frontmatter.cover
-  if (frontCover) {
-    const pagePath = posts[index.value].href.replace(/\.html$/, '')
-    const resolved = imageMap[`/${pagePath}/${frontCover}`] as string
-    cover.value = `background-image: url(${resolved || data.theme.value.cover})`
-  } else {
-    cover.value = `background-image: url(${data.theme.value.cover})`
+const isPost = computed(() => posts.findIndex(p => p.href == route.path.replace(base, '')) !== -1)
+const postIndex = computed(() => posts.findIndex(p => p.href == route.path.replace(base, '')))
+
+const date = computed(() => {
+  const ts = data.page.value.frontmatter.date || data.page.value.lastUpdated
+  return ts ? new Date(ts).toLocaleDateString('sv-SE') : ''
+})
+
+const cover = computed(() => {
+  if (!isPost.value) return ''
+  const fc = data.page.value.frontmatter.cover
+  if (fc) {
+    const idx = postIndex.value
+    if (idx >= 0) {
+      const resolved = imageMap[`/posts/${posts[idx].dir}/${fc}`] as string
+      return `background-image: url(${resolved || data.theme.value.cover})`
+    }
   }
-  date.value = new Date(data.page.value.lastUpdated || posts[index.value].create).toLocaleDateString('sv-SE')
-  waline.value?.update()
-  let ival = index.value
-  if (ival - 1 >= 0) {
-    nav[0].href = base + posts[ival - 1].href
-    nav[0].text = posts[ival - 1].title
-    nav[0].show = true
-  } else {
-    nav[0].show = false
-  }
-  if (ival + 1 < posts.length) {
-    nav[1].href = base + posts[ival + 1].href
-    nav[1].text = posts[ival + 1].title
-    nav[1].show = true
-  } else {
-    nav[1].show = false
-  }
-  // web only, not support in SSR
-  if (typeof window !== 'undefined') {
-    nextTick().then(() => {
-      updateKatex()
-    })
-  }
+  return `background-image: url(${data.theme.value.cover})`
+})
+
+const prevPost = computed(() => {
+  const idx = postIndex.value
+  if (idx > 0) return { href: base + posts[idx - 1].href, text: posts[idx - 1].title }
+  return null
+})
+const nextPost = computed(() => {
+  const idx = postIndex.value
+  if (idx >= 0 && idx + 1 < posts.length) return { href: base + posts[idx + 1].href, text: posts[idx + 1].title }
+  return null
+})
+
+const updateKatex = () => {
+  if (typeof renderMathInElement === 'undefined') return
+  const el = document.querySelector('.article .content')
+  if (!el) return
+  renderMathInElement(el, {
+    delimiters: [
+      { left: '$$', right: '$$', display: true },
+      { left: '$', right: '$', display: false },
+    ],
+  })
 }
-update()
-watch(route, update)
+
+watch(() => data.page.value, () => {
+  waline.value?.update()
+  if (typeof window !== 'undefined') {
+    nextTick(() => updateKatex())
+  }
+})
 
 const setActiveLink = () => {
   const headers = data.page.value.headers
@@ -122,17 +123,7 @@ const setActiveLink = () => {
   history.replaceState(null, document.title, '#' + headers[headers.length - 1].slug)
 }
 const onScroll = throttleAndDebounce(setActiveLink, 300)
-const updateKatex = () => {
-  if (typeof renderMathInElement === 'undefined') return
-  const el = document.querySelector('.article .content')
-  if (!el) return
-  renderMathInElement(el, {
-    delimiters: [
-      { left: '$$', right: '$$', display: true },
-      { left: '$', right: '$', display: false },
-    ],
-  })
-}
+
 onMounted(() => {
   setActiveLink()
   window.addEventListener('scroll', onScroll)
@@ -144,7 +135,6 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('scroll', onScroll)
 })
-
 </script>
 
 <style lang="scss">
@@ -154,67 +144,45 @@ onUnmounted(() => {
   background-size: cover;
   background-position: center center;
   margin-top: 64px;
-  position: relative;
-
-  &::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 60%;
-    background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
-    pointer-events: none;
-  }
-
-  .titlebox {
-    position: absolute;
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
-    left: 0;
-    right: 0;
-    bottom: 20px;
-    z-index: 1;
-    color: white;
-    padding: 0 1em;
-  }
-
-  .title {
-    font-size: 32px;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
-  }
-
-  .info {
-    font-size: 14px;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.5);
-    margin-top: 6px;
-  }
-
-  .tags {
-    margin-top: 8px;
-    a {
-      display: inline-block;
-      margin-right: 8px;
-      padding: 2px 10px;
-      font-size: 12px;
-      color: rgba(255, 255, 255, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      border-radius: 20px;
-      transition: all 0.2s ease;
-      &:hover {
-        color: #fff;
-        background: rgba(255, 255, 255, 0.2);
-        border-color: rgba(255, 255, 255, 0.7);
-      }
-    }
-  }
 }
 
 .article {
   position: relative;
   max-width: 800px;
   margin: auto;
+
+  .article-header {
+    text-align: center;
+    padding-top: 6.5em;
+    margin-bottom: 1.5em;
+  }
+  .article-title {
+    font-size: 2em;
+    margin: 0;
+    color: var(--color-text);
+  }
+  .article-meta {
+    font-size: 14px;
+    color: var(--color-gray);
+    margin-top: 1em;
+  }
+  .article-tags {
+    margin-top: 1em;
+    a {
+      display: inline-block;
+      margin: 0 4px;
+      padding: 2px 12px;
+      font-size: 12px;
+      color: var(--color-accent);
+      border: 1px solid var(--color-accent);
+      border-radius: 20px;
+      transition: all 0.2s ease;
+      &:hover {
+        color: #fff;
+        background: var(--color-accent);
+      }
+    }
+  }
 
   .content {
     margin: 0.5em;
@@ -229,10 +197,14 @@ onUnmounted(() => {
     span {
       flex: 1;
       max-width: 50%;
+      &:last-child {
+        text-align: right;
+      }
     }
 
     a {
       display: block;
+      max-width: 100%;
       padding: 0.8em 1em;
       border-radius: 8px;
       color: var(--color-text);
@@ -264,7 +236,7 @@ onUnmounted(() => {
   }
 
   a {
-    color: #e58700;
+    color: var(--color-accent);
     position: relative;
     transition: color 0.2s ease-out;
 
@@ -313,8 +285,31 @@ onUnmounted(() => {
     padding-bottom: 0.3em;
     border-bottom: 1px dashed var(--color-border);
   }
-  h3 { font-size: 1.25em; margin: 1.3em 0 0.5em; }
-  h4 { font-size: 1.1em; margin: 1em 0 0.4em; }
+  h3, h4, h5, h6 {
+    position: relative;
+    text-align: center;
+
+    &::before {
+      position: absolute;
+      left: 0;
+    }
+  }
+  h3 {
+    font-size: 1.25em; margin: 1.3em 0 0.5em;
+    &::before { content: '# '; color: #f06292; text-shadow: 1px 1px 0 #f8bbd0; }
+  }
+  h4 {
+    font-size: 1.1em; margin: 1em 0 0.4em;
+    &::before { content: '## '; color: #f06292; text-shadow: 1px 1px 0 #f8bbd0; }
+  }
+  h5 {
+    font-size: 1em; margin: 1em 0 0.4em;
+    &::before { content: '### '; color: #f06292; text-shadow: 1px 1px 0 #f8bbd0; }
+  }
+  h6 {
+    font-size: 0.9em; margin: 1em 0 0.4em;
+    &::before { content: '#### '; color: #f06292; text-shadow: 1px 1px 0 #f8bbd0; }
+  }
 
   blockquote {
     margin: 1.5em 0;
@@ -388,10 +383,6 @@ onUnmounted(() => {
 @media (max-width: 800px) {
   .abanner {
     height: 200px;
-
-    .titlebox {
-      margin-left: 0.5em;
-    }
   }
 }
 
@@ -442,7 +433,6 @@ onUnmounted(() => {
   font-weight: bold;
 }
 
-// inline code
 code {
   font-size: var(--code-font-size);
   border-radius: 4px;
@@ -454,6 +444,16 @@ html {
   --vp-icon-copy: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' height='20' width='20' stroke='rgba(128,128,128,1)' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2'/%3E%3C/svg%3E");
   --vp-icon-copied: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' height='20' width='20' stroke='rgba(128,128,128,1)' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2m-6 9 2 2 4-4'/%3E%3C/svg%3E");
 }
+
+.vp-doc [class*="language-"] > span.lang {
+      top: 8px;
+      right: 56px;
+      left: auto;
+      transform: none;
+      font-size: 12px;
+      color: var(--color-gray);
+    }
+
 
 div[class*="language-"] {
   position: relative;

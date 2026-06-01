@@ -6,6 +6,7 @@ export default defineConfig({
   base: '/',
   ignoreDeadLinks: true,
   appearance: false,
+  markdown: { headers: { level: [2, 3, 4, 5, 6] } },
   vite: {
     css: {
       preprocessorOptions: {

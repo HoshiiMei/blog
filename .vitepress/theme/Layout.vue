@@ -51,7 +51,7 @@ const { frontmatter } = useData()
 html {
   scroll-behavior: smooth;
   --global-font: "Noto Serif SC", "MicroSoft Yahei", serif;
-  --color-accent: #fe9600;
+  --color-accent: #2563eb;
   --color-gray: #666;
   --color-text: #02111d;
   --color-background: #eee;
