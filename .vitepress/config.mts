@@ -15,10 +15,14 @@ export default defineConfig({
     css: {
       preprocessorOptions: {
         scss: {
-          api: 'modern-compiler' // 告诉 Vite 使用现代 Sass API
+          api: 'modern-compiler'
         }
       }
-    }
+    },
+    server: {
+      fs: { allow: ['../..'] }
+    },
+    ssr: { noExternal: ['vitepress-theme-hoshii'] }
   },
   themeConfig: {
     hello: '映星湖的个人网页',

@@ -1,16 +1,18 @@
-import Layout from './Layout.vue'
-import { type EnhanceAppContext } from 'vitepress'
-import DefaultTheme from 'vitepress/theme'
-
-// ⚡ 核心：把你刚刚下载到本地的图标库 CSS 引入进来！
+import Theme from 'vitepress-theme-hoshii'
 import '@fortawesome/fontawesome-free/css/all.min.css'
+import { data as posts } from '../posts.data'
+
+// 封面图映射 — glob 必须在博客项目侧执行
+const imageMap = import.meta.glob(
+  '/posts/**/images/*.{png,jpg,webp}',
+  { eager: true, query: '?url', import: 'default' }
+)
 
 export default {
-  Layout,
-  DefaultTheme,
-  NotFound: () => 'custom 404', // <- this is a Vue 3 functional component
-  enhanceApp({ app, router, siteData }: EnhanceAppContext) {
-    // app is the Vue 3 app instance from `createApp()`. router is VitePress'
-    // custom router. `siteData`` is a `ref`` of current site-level metadata.
+  ...Theme,
+  enhanceApp(ctx: any) {
+    Theme.enhanceApp?.(ctx)
+    ctx.app.provide('posts', posts)
+    ctx.app.provide('imageMap', imageMap)
   }
 }

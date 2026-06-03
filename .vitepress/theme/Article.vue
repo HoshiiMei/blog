@@ -392,6 +392,45 @@ onUnmounted(() => {
     }
   }
 
+  ul {
+    list-style: none;
+    padding-left: 1.2em;
+
+    li {
+      position: relative;
+      padding-left: 0.6em;
+
+      &::before {
+        content: "—";
+        position: absolute;
+        left: -1.2em;
+        color: var(--color-accent);
+        font-size: 0.8em;
+        opacity: 0.7;
+      }
+    }
+
+    /* 嵌套第二层用空心小圈 */
+    ul li::before {
+      content: "◦";
+      font-size: 1.1em;
+      opacity: 0.5;
+    }
+    /* 嵌套第三层用短横线 */
+    ul ul li::before {
+      content: "–";
+      font-size: 0.8em;
+      opacity: 0.4;
+    }
+  }
+
+  ol {
+    li::marker {
+      color: var(--color-accent);
+      font-weight: 700;
+    }
+  }
+
   strong {
     color: #1a1a1a;
   }
