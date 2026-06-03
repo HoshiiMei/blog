@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
-  title: "映星湖的博客（开发中）",
+  title: "HoshiiMei-blog",
   description: "",
   base: '/',
   ignoreDeadLinks: true,
@@ -24,7 +24,7 @@ export default defineConfig({
     // 社交图标列表
     social: [
       { icon: 'fa-github', url: 'https://github.com/HoshiiMei' },
-      { icon: 'fa-twitter', url: 'https://twitter.com/你的名字' }
+      { icon: 'fa-bilibili', url: 'https://space.bilibili.com/24225737' }
     ],
 
   }

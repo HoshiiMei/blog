@@ -47,10 +47,28 @@ const { frontmatter } = useData()
 </script>
 
 <style lang="scss">
+/* =========================================
+   鸿蒙字体 (HarmonyOS Sans) — CDN 加载
+   ========================================= */
+@font-face {
+  font-family: 'HarmonyOS Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('https://cdn.jsdelivr.net/npm/@lobehub/webfont-harmony-sans-sc@1.0.0/fonts/HarmonyOS_Sans_SC_Regular.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'HarmonyOS Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('https://cdn.jsdelivr.net/npm/@lobehub/webfont-harmony-sans-sc@1.0.0/fonts/HarmonyOS_Sans_SC_Bold.woff2') format('woff2');
+}
+
 /* 保持你原有的全局样式不变 */
 html {
   scroll-behavior: smooth;
-  --global-font: "Noto Serif SC", "MicroSoft Yahei", serif;
+  --global-font: "HarmonyOS Sans", "Noto Serif SC", "MicroSoft Yahei";
   --color-accent: #2563eb;
   --color-gray: #666;
   --color-text: #02111d;

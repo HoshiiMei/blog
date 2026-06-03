@@ -10,8 +10,8 @@ const { text } = defineProps<{ text: string }>()
 .clean-title {
   display: block;
   margin: 0;
-  font-weight: bold;
-  font-size: 90px;
+  font-weight: 800;
+  font-size: 95px;
   color: white;
   line-height: 1.2;
   margin-bottom: 0px;

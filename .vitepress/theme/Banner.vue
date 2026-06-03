@@ -23,7 +23,7 @@ import { useData } from 'vitepress'
 import HeroTitle from './HeroTitle.vue'
 const themeConfig = useData().theme.value
 const hello = themeConfig.hello || '这里是缺省值'
-const motto = themeConfig.motto || ''
+const motto = themeConfig.motto || '如果你看到了这一行，请前往.vitepress/config.mts里面输入自己的博客介绍'
 const social = themeConfig.social || []
 const cover = themeConfig.cover
 </script>
