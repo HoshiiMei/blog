@@ -105,7 +105,7 @@ VitePress的静态站实现，就是端上来预制菜，在文本编辑器里�
 
 </figure>
 
-我感觉这个还挺帅的，不过如果完全还原的话，应该只写上去两个字“博 客”
+我感觉这个还挺帅的，不过如果完全还原的话，应该只写上去两个字“博 客”<br>
 想了想好像有一种简约又直白的美
 
 字体是"HarmonyOS Sans"，终末地中使用的字体，也是博客所有文字使用的默认字体
@@ -114,9 +114,47 @@ sakura主题的话，首页中间会有一个缓慢旋转的博主头像，说�
 
 **文章列表：**
 
-sukura主题里面，每次会在一个图片池里面随机抽取几张图，作为首页背景图或者文章列表的展示图
+Sakura主题里面，每次会在一个图片池里面随机抽取几张图，作为首页背景图或者文章列表的展示图
 
 我很喜欢给每篇文章安排一个头图，大部分是取自我写这篇文章期间在看的动画，所以我把这部分内容写到了主题里面
 
-每篇文章都有一个head,包括标题，作者，日期，封面，元素和摘要，这些内容会展示在文章列表和正文界面
+每篇文章都有一个head,包括标题，作者，日期，封面，元素和摘要，这些内容会部分展示在文章列表和正文界面
+
+::: details 写文章列表发现的一个问题
+  最开始的时候文章列表里面的封面图完全不显示，找了几次才发现这个问题：
+  
+  Vite构建时会给图片文件名加一串哈希码（缓存优化），如果写的是原始路径，dev模式下还能找到，但是生产构建之后原始的路径就根本不存在了，导致本地调试看起来没问题，部署上线就显示滚木，得用import.meta.glob自动查出改名后的真实路径
+
+```  
+  //BlogList.vue — 旧代码
+  function coverStyle(p: PostData) {
+    if (!p.cover) return ''
+    const dir = p.href.replace(/\.html$/, '')
+    return `background-image: url(${base}${dir}/${p.cover})`  // ← 直接拼原始路径
+  }
+```
+
+---
+
+```  
+  //BlogList.vue — 新代码
+  const imageMap = import.meta.glob('/posts/**/images/*.{png,jpg,webp}', {
+    eager: true, query: '?url', import: 'default'
+  })
+
+  function coverStyle(p: PostData) {
+    if (!p.cover) return ''
+    const dir = p.href.replace(/\.html$/, '')
+    const url = imageMap[`/${dir}/${p.cover}`]  // ← 从 glob map 查出带 hash 的真实 URL
+    if (url) return `background-image: url(${url})`
+    return ''
+  }
+```  
+
+:::
+
+**文章展示：**
+
+这里做的比较有意思的东西是右侧的小标题导航栏，模仿的是终端下输入-tree会显示的文件结构树<br>
+不觉得这里的ASCII树状图生成很酷吗
 

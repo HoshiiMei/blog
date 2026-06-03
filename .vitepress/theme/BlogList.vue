@@ -14,10 +14,6 @@
         <a :href="base + p.href">
           <div class="title">{{ p.title }}</div>
         </a>
-        <!-- <div class="view">
-          <i class="fa fa-eye"></i>
-          {{ 114514 }} 阅读
-        </div>-->
         <div class="content" v-html="p.excerpt"></div>
         <div v-if="click" class="tags">
           <a v-for="t in p.tags" href="#" @click="click(t)">
@@ -95,7 +91,7 @@ function coverStyle(p: PostData) {
     margin: -24px -24px 16px -24px;
     height: 180px;
     background-size: cover;
-    background-position: center center;
+    background-position: top center;
   }
 
   .title {

@@ -1,5 +1,4 @@
 <template>
-  <div class="abanner" :style="cover" v-if="isPost" />
   <div class="article">
     <div class="article-header">
       <h1 class="article-title">{{ data.page.value.title }}</h1>
@@ -49,7 +48,6 @@ const data = useData()
 const base = data.site.value.base
 const route = useRoute()
 const active = ref(0)
-const imageMap = import.meta.glob('/posts/**/images/*.{png,jpg,webp}', { eager: true, query: '?url', import: 'default' })
 const waline = ref<InstanceType<typeof Waline>>()
 
 const isPost = computed(() => posts.findIndex(p => p.href == route.path.replace(base, '')) !== -1)
@@ -58,19 +56,6 @@ const postIndex = computed(() => posts.findIndex(p => p.href == route.path.repla
 const date = computed(() => {
   const ts = data.page.value.frontmatter.date || data.page.value.lastUpdated
   return ts ? new Date(ts).toLocaleDateString('sv-SE') : ''
-})
-
-const cover = computed(() => {
-  if (!isPost.value) return ''
-  const fc = data.page.value.frontmatter.cover
-  if (fc) {
-    const idx = postIndex.value
-    if (idx >= 0) {
-      const resolved = imageMap[`/posts/${posts[idx].dir}/${fc}`] as string
-      return `background-image: url(${resolved || data.theme.value.cover})`
-    }
-  }
-  return `background-image: url(${data.theme.value.cover})`
 })
 
 const prevPost = computed(() => {
@@ -138,14 +123,6 @@ onUnmounted(() => {
 </script>
 
 <style lang="scss">
-.abanner {
-  height: 400px;
-  width: 100%;
-  background-size: cover;
-  background-position: center center;
-  margin-top: 64px;
-}
-
 .article {
   position: relative;
   max-width: 800px;
@@ -320,6 +297,50 @@ onUnmounted(() => {
     p { margin: 0.5em 0; }
   }
 
+  details.details.custom-block {
+    margin: 1.5em 0;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: #faf8f5;
+
+    summary {
+      padding: 0.8em 1.2em;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--color-accent);
+      user-select: none;
+      transition: background 0.2s ease;
+
+      &:hover {
+        background: rgba(37, 99, 235, 0.06);
+      }
+
+      &::marker {
+        content: "";
+      }
+      &::-webkit-details-marker {
+        display: none;
+      }
+
+      &::before {
+        content: "▸";
+        display: inline-block;
+        margin-right: 0.5em;
+        transition: transform 0.25s ease;
+        font-size: 0.85em;
+      }
+    }
+
+    &[open] summary::before {
+      transform: rotate(90deg);
+    }
+
+    > :not(summary) {
+      padding: 0 1.2em 1em;
+    }
+  }
+
   img {
     max-width: 100%;
     border-radius: 6px;
@@ -378,12 +399,6 @@ onUnmounted(() => {
 
 .katex-display {
   overflow: auto hidden;
-}
-
-@media (max-width: 800px) {
-  .abanner {
-    height: 200px;
-  }
 }
 
 .custom-block {
@@ -463,25 +478,24 @@ div[class*="language-"] {
   display: flex;
   flex-direction: row-reverse;
   border-radius: 8px;
-  border: 1px solid var(--color-border);
-  padding-top: 32px;
+  border: 1px solid #3c3c3c;
+  padding-top: 0;
   overflow: hidden;
+  background: #1e1e1e;
 
   button.copy {
     position: absolute;
     top: 8px;
     right: 8px;
-    justify-content: center;
-    align-items: center;
     width: 40px;
     height: 40px;
-    background-color: white;
+    background-color: #3c3c3c;
     background-image: var(--vp-icon-copy);
     background-repeat: no-repeat;
     background-position: 50%;
     border-radius: 4px;
     opacity: 0;
-    border: 1px solid var(--color-border);
+    border: 1px solid #555;
   }
 
   &:hover button.copy {
@@ -493,18 +507,21 @@ div[class*="language-"] {
     transform: translate(-50%, -28px);
     left: 50%;
     user-select: none;
+    color: #999;
   }
 
   pre {
     margin: 0;
-    margin-left: 16px;
+    padding: 40px 20px 16px 20px;
     flex-grow: 1;
-    overflow: scroll;
+    overflow: auto;
+    color: #d4d4d4;
   }
 
   code {
     background-color: transparent;
     padding: 0;
+    color: #d4d4d4;
   }
 
   &:before {
@@ -514,15 +531,15 @@ div[class*="language-"] {
     right: 0;
     top: 0;
     height: 32px;
-    background: #f6f8fa;
-    border-bottom: 1px solid var(--color-border);
+    background: #2d2d2d;
+    border-bottom: 1px solid #3c3c3c;
   }
 
   &:after {
     content: "";
     position: absolute;
     top: 10px;
-    left: 12px;
+    left: 14px;
     width: 12px;
     height: 12px;
     border-radius: 50%;
@@ -532,8 +549,9 @@ div[class*="language-"] {
 }
 
 .line-numbers-wrapper {
+  padding-top: 40px;
   padding-left: 16px;
-  color: var(--color-gray);
+  color: #858585;
   user-select: none;
 }
 </style>
