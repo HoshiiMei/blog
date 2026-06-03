@@ -119,7 +119,7 @@ function coverStyle(p: PostData) {
 @media (max-width: 720px) {
   .bloglist {
     .card {
-      margin: 0;
+      margin: 0 0 1px 0;
       border-radius: 0;
       background: #fdfbf7;
       box-shadow: none;

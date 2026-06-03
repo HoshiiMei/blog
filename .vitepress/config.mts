@@ -6,6 +6,10 @@ export default defineConfig({
   base: '/',
   ignoreDeadLinks: true,
   appearance: false,
+  head: [
+    ['link', { rel: 'icon', type: 'image/png', href: '/favicon.png' }],
+    ['link', { rel: 'apple-touch-icon', href: '/favicon.png' }],
+  ],
   markdown: { headers: { level: [2, 3, 4, 5, 6] } },
   vite: {
     css: {

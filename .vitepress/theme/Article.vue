@@ -401,6 +401,35 @@ onUnmounted(() => {
   overflow: auto hidden;
 }
 
+/* ===== 移动端适配 ===== */
+@media (max-width: 720px) {
+  .article {
+    padding: 0 16px;
+
+    .article-header {
+      padding-top: 5em;
+    }
+    .article-title {
+      font-size: 1.5em;
+    }
+
+    .nav a {
+      font-size: 13px;
+      padding: 0.6em 0.8em;
+    }
+  }
+
+  .content {
+    font-size: 16px;
+
+    table {
+      display: block;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+  }
+}
+
 .custom-block {
 
   &.tip,

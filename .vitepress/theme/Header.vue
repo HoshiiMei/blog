@@ -311,6 +311,40 @@ header.integrated-header {
   font-size: 14px;
 }
 
+/* ===== 移动端适配 ===== */
+@media (max-width: 720px) {
+  header.integrated-header {
+    top: 6px;
+
+    .pill-bar {
+      height: 40px;
+      padding: 0 10px;
+      border-radius: 20px;
+      margin-right: 8px;
+
+      .menu-link {
+        font-size: 14px;
+        padding: 4px 10px;
+      }
+
+      .divider {
+        margin: 0 6px;
+        height: 14px;
+      }
+
+      .icon-btn {
+        font-size: 1rem;
+        margin-left: 6px;
+      }
+    }
+
+    .profile-avatar {
+      width: 40px;
+      height: 40px;
+    }
+  }
+}
+
 /* 搜索弹窗动画 */
 .search-fade-enter-active { transition: opacity 0.2s ease; }
 .search-fade-leave-active { transition: opacity 0.15s ease; }
