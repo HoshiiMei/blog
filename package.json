@@ -10,8 +10,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.2.0",
     "feed": "^4.2.2",
-    "gray-matter": "^4.0.3",
-    "vitepress-theme-hoshii": "file:../vitepress-theme-hoshii"
+    "gray-matter": "^4.0.3"
   },
   "devDependencies": {
     "sass": "^1.99.0",

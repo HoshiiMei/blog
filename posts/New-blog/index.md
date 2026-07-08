@@ -1,7 +1,7 @@
 ---
 title: VitePress博客主题大改造——Sakura二次元风格迁移实录
 author: 映星湖
-date: 2026-05-25
+date: 2026-06-04
 cover: images/利群与青岛.jpg
 tags: ["前端","VitePrss","博客搭建"]
 excerpt:  基于现有VitePress博客框架，以AI辅助开发的方式，将Sakura主题的视觉语言迁移到Vue3体系中，完成一次主题层改造

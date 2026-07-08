@@ -85,6 +85,6 @@ function checkTags() {
   if (!fs.existsSync(dir)) {
     console.log('Creating page: /tags')
     fs.mkdirSync(dir)
-    fs.writeFileSync('tags/index.md', '---\ntitle: 标签\n---\n')
+    fs.writeFileSync('tags/index.md', '---\ntitle: 标签\nlayout:tags\n---\n')
   }
 }
