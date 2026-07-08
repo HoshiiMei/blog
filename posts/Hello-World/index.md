@@ -7,5 +7,5 @@ tags: ["无标签"]
 excerpt:  
 ---
 
-![](大罗娜.webp)
+![](images/大罗娜.webp)
 
