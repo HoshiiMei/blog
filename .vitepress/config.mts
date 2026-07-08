@@ -18,11 +18,7 @@ export default defineConfig({
           api: 'modern-compiler'
         }
       }
-    },
-    server: {
-      fs: { allow: ['../..'] }
-    },
-    ssr: { noExternal: ['vitepress-theme-hoshii'] }
+    }
   },
   themeConfig: {
     hello: '映星湖的个人网页',

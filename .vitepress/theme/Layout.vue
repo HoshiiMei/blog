@@ -64,12 +64,14 @@ const { frontmatter } = useData()
   font-display: swap;
   src: url('https://cdn.jsdelivr.net/npm/@lobehub/webfont-harmony-sans-sc@1.0.0/fonts/HarmonyOS_Sans_SC_Bold.woff2') format('woff2');
 }
+ @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap');
+
 
 /* 保持你原有的全局样式不变 */
 html {
   scroll-behavior: smooth;
   --global-font: "HarmonyOS Sans", "Noto Serif SC", "MicroSoft Yahei";
-  --color-accent: #2563eb;
+  --color-accent: #5b9bd5;
   --color-gray: #666;
   --color-text: #02111d;
   --color-background: #eee;
