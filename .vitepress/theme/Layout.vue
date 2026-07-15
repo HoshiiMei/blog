@@ -19,6 +19,10 @@
           <Tag />
         </template>
 
+        <template v-else-if="frontmatter.layout === 'lab'">
+          <Lab />
+        </template>
+
         <template v-else>
           <Article />
         </template>
@@ -34,7 +38,13 @@ import Banner from './Banner.vue'
 import Article from './Article.vue'
 import BlogList from './BlogList.vue'
 import Tag from './Tag.vue'
+import Lab from './Lab.vue'
 import ToTop from './ToTop.vue'
+
+// 本地化 Merriweather 字体（替代 Google Fonts CDN）
+import '@fontsource/merriweather/latin-400.css'
+import '@fontsource/merriweather/latin-700.css'
+import '@fontsource/merriweather/latin-400-italic.css'
 
 // 引入 Vue 的 computed 和 VitePress 的 API
 import { useRoute, useData } from 'vitepress'
@@ -48,23 +58,24 @@ const { frontmatter } = useData()
 
 <style lang="scss">
 /* =========================================
-   鸿蒙字体 (HarmonyOS Sans) — CDN 加载
+   鸿蒙字体 (HarmonyOS Sans) — 本地托管
    ========================================= */
 @font-face {
   font-family: 'HarmonyOS Sans';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('https://cdn.jsdelivr.net/npm/@lobehub/webfont-harmony-sans-sc@1.0.0/fonts/HarmonyOS_Sans_SC_Regular.woff2') format('woff2');
+  src: url('/fonts/HarmonyOS_Sans_SC_Regular.woff2') format('woff2');
 }
 @font-face {
   font-family: 'HarmonyOS Sans';
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url('https://cdn.jsdelivr.net/npm/@lobehub/webfont-harmony-sans-sc@1.0.0/fonts/HarmonyOS_Sans_SC_Bold.woff2') format('woff2');
+  src: url('/fonts/HarmonyOS_Sans_SC_Bold.woff2') format('woff2');
 }
- @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap');
+
+/* Merriweather 字体通过 @fontsource 本地导入（见 script setup） */
 
 
 /* 保持你原有的全局样式不变 */
@@ -89,6 +100,12 @@ body {
   overflow-x: hidden;
   color: var(--color-text);
   background-color: var(--color-background);
+}
+
+/* Lucide 图标全局对齐：让 SVG 和文字坐在同一条基线上 */
+svg.lucide {
+  vertical-align: -0.125em;
+  flex-shrink: 0;
 }
 
 /* ... 原有的其他基础样式 (a, img, hr, 滚动条等) ... */

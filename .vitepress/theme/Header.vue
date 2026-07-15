@@ -72,6 +72,7 @@ interface MenuItem { name: string, url: string }
 const menu: MenuItem[] = [
   { name: '首页', url: '/' },
   { name: '标签', url: '/tags/' },
+  { name: '实验室', url: '/lab/' },
 ]
 
 const base = useData().site.value.base

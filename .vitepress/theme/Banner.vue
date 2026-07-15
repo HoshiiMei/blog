@@ -15,6 +15,14 @@
         </div>
       </span>
     </div>
+    <!-- 首页下拉箭头 -->
+    <div class="headertop-down" @click="scrollDown">
+      <span>
+        <svg class="homepage-downicon" viewBox="0 0 1843 1024" width="80px" height="80px" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1221.06136021 284.43250057a100.69380037 100.69380037 0 0 1 130.90169466 153.0543795l-352.4275638 302.08090944a100.69380037 100.69380037 0 0 1-130.90169467 0L516.20574044 437.48688007A100.69380037 100.69380037 0 0 1 647.10792676 284.43250057L934.08439763 530.52766665l286.97696258-246.09516608z" fill="currentColor"></path>
+        </svg>
+      </span>
+    </div>
   </div>
 </template>
 
@@ -26,6 +34,9 @@ const hello = themeConfig.hello || '这里是缺省值'
 const motto = themeConfig.motto || '如果你看到了这一行，请前往.vitepress/config.mts里面输入自己的博客介绍'
 const social = themeConfig.social || []
 const cover = themeConfig.cover
+function scrollDown() {
+  window.scrollBy({ top: window.innerHeight, behavior: 'smooth' })
+}
 </script>
 
 <style lang="scss">
@@ -132,45 +143,28 @@ const cover = themeConfig.cover
   100% { background-position-x: -1009px; }
 }
 
-//向下滚动提示（目前被弃用）
-.scroll-hint {
+//首页下拉箭头
+.headertop-down {
   position: absolute;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 50px;
+  left: calc(50% - 40px);
   z-index: 10;
+  cursor: pointer;
+  animation: float-down 5s ease-in-out infinite;
 
-  .scroll-line {
-    display: block;
-    width: 24px;
-    height: 40px;
-    border: 2px solid rgba(255, 255, 255, 0.8);
-    border-radius: 12px;
-    position: relative;
+  .homepage-downicon {
+    color: rgba(255, 255, 255, 0.8);
+    transition: color 0.3s ease;
+  }
 
-    &::after {
-      content: "";
-      position: absolute;
-      top: 6px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 4px;
-      height: 8px;
-      background: white;
-      border-radius: 2px;
-      animation: scroll-bounce 2s ease-in-out infinite;
-    }
+  &:hover .homepage-downicon {
+    color: var(--color-accent);
   }
 }
 
-@keyframes scroll-bounce {
-  0%, 100% {
-    top: 6px;
-    opacity: 1;
-  }
-  50% {
-    top: 20px;
-    opacity: 0.3;
-  }
+@keyframes float-down {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-7px); }
+  100% { transform: translateY(0px); }
 }
 </style>
