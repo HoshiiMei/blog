@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
+import { Content } from 'vitepress'
 
 const SECRET = 'lab'
 const unlocked = ref(false)
@@ -33,23 +34,14 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   <div class="lab-page">
     <Transition name="lock-fade" mode="out-in">
       <div v-if="!unlocked" key="locked" class="lock-screen">
-        <div class="lock-icon">🔒</div>
-        <h2>此区域已锁定</h2>
-        <p class="lock-desc">在此页面输入正确密钥以解锁</p>
+        <h2>好慈祥的老奶奶啊</h2>
         <Transition name="hint-fade">
-          <p v-if="showHint" class="hint-text">密钥就在你手边……继续输入</p>
+          <p v-if="showHint" class="hint-text">滚木滚木棍</p>
         </Transition>
       </div>
 
       <div v-else key="unlocked" class="lab-content">
-        <div class="lab-header">
-          <h1>🧪 实验室</h1>
-          <p>欢迎来到实验室。这里是一些实验性的互动内容和彩蛋。</p>
-        </div>
-
-        <div class="lab-placeholder">
-          <p>更多内容即将到来……</p>
-        </div>
+        <Content />
       </div>
     </Transition>
   </div>
@@ -66,12 +58,6 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
 .lock-screen {
   text-align: center;
   user-select: none;
-}
-
-.lock-icon {
-  font-size: 64px;
-  margin-bottom: 16px;
-  animation: lock-pulse 2s ease-in-out infinite;
 }
 
 .lock-screen h2 {
@@ -122,30 +108,4 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   padding: 100px 24px 48px;
 }
 
-.lab-header {
-  text-align: center;
-  margin-bottom: 48px;
-
-  h1 {
-    font-family: 'Merriweather', 'Noto Serif SC', serif;
-    font-size: 2em;
-    color: var(--color-text);
-    margin: 0;
-  }
-
-  p {
-    font-size: 16px;
-    color: var(--color-gray);
-    margin: 12px 0 0;
-  }
-}
-
-.lab-placeholder {
-  text-align: center;
-  padding: 80px 24px;
-  border: 2px dashed var(--color-border);
-  border-radius: 16px;
-  color: var(--color-gray);
-  font-size: 15px;
-}
 </style>
