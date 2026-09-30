@@ -10,6 +10,9 @@
       <div class="divider"></div>
 
       <div class="icons-group">
+        <button class="icon-btn theme" :title="isDark ? '切换到日间模式' : '切换到夜间模式'" @click="toggleTheme">
+          <i :class="isDark ? 'fa fa-sun' : 'fa fa-moon'"></i>
+        </button>
         <button class="icon-btn search" title="搜索" @click="openSearch">
           <i class="fa fa-search"></i>
         </button>
@@ -63,7 +66,7 @@
 </template>
 
 <script setup lang="ts">
-import { withBase, useData } from 'vitepress'
+import { withBase, useData, useRouter } from 'vitepress'
 import { ref, computed, nextTick } from 'vue'
 import { data as posts } from '../posts.data'
 
@@ -75,7 +78,14 @@ const menu: MenuItem[] = [
   { name: '实验室', url: '/lab/' },
 ]
 
-const base = useData().site.value.base
+const data = useData()
+const base = data.site.value.base
+const router = useRouter()
+const { isDark } = data
+
+function toggleTheme() {
+  isDark.value = !isDark.value
+}
 
 // 搜索
 const searchVisible = ref(false)
@@ -102,16 +112,18 @@ function closeSearch() {
 
 function goFirst() {
   if (results.value.length > 0) {
-    window.location.href = base + results.value[0].href
-    closeSearch()
+    // 使用 VitePress 路由跳转，避免整页刷新，让页面切换动画生效
+    router.go(base + results.value[0].href)
   }
+  closeSearch()
 }
 
 // 随机
 function goRandom() {
   if (posts.length === 0) return
   const i = Math.floor(Math.random() * posts.length)
-  window.location.href = base + posts[i].href
+  // 使用 VitePress 路由跳转，避免整页刷新
+  router.go(base + posts[i].href)
 }
 </script>
 
@@ -130,13 +142,14 @@ header.integrated-header {
   .pill-bar {
     display: flex;
     align-items: center;
-    background: rgba(255, 255, 255, 0.8);
+    background: var(--color-header-bg);
     border-radius: 24px;
     height: 48px;
     padding: 0 15px;
     backdrop-filter: blur(8px);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     margin-right: 12px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 
     .menu-list {
       margin: 0;
@@ -156,7 +169,7 @@ header.integrated-header {
     .menu-link {
       font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", "SimSun", "Times New Roman", serif;
       font-size: 16px;
-      color: #333;
+      color: var(--color-icon);
       display: inline-block;
       text-decoration: none;
       padding: 6px 14px;
@@ -188,9 +201,9 @@ header.integrated-header {
       outline: none;
       margin-left: 10px;
       cursor: pointer;
-      color: #333;
+      color: var(--color-icon);
       font-size: 1.2rem;
-      transition: transform 0.2s;
+      transition: transform 0.2s, color 0.3s ease;
 
       &:hover {
         transform: scale(1.1);
@@ -202,14 +215,15 @@ header.integrated-header {
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background: white;
+    background: var(--color-surface);
     display: flex;
     overflow: hidden;
     align-items: center;
     justify-content: center;
-    border: 2px solid rgba(255, 255, 255, 0.6);
+    border: 2px solid var(--color-border);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
     img {
       width: 100%;
       height: 100%;
@@ -239,11 +253,12 @@ header.integrated-header {
 .search-bar {
   display: flex;
   align-items: center;
-  background: #fff;
+  background: var(--color-surface);
   border-radius: 12px;
   padding: 0 16px;
   height: 48px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  transition: background-color 0.3s ease;
 
   .fa-search {
     color: var(--color-gray);
@@ -258,26 +273,27 @@ header.integrated-header {
     font-size: 16px;
     font-family: var(--global-font);
     color: var(--color-text);
-    &::placeholder { color: #aaa; }
+    &::placeholder { color: var(--color-gray-2); }
   }
 
   .clear-btn {
     background: none;
     border: none;
-    color: #999;
+    color: var(--color-gray);
     cursor: pointer;
     padding: 4px;
     font-size: 14px;
-    &:hover { color: #333; }
+    &:hover { color: var(--color-icon); }
   }
 }
 
 .search-results {
   margin-top: 8px;
-  background: #fff;
+  background: var(--color-surface);
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  transition: background-color 0.3s ease;
 }
 
 .result-item {
@@ -289,7 +305,7 @@ header.integrated-header {
   text-decoration: none;
 
   &:hover {
-    background: #f5f5f5;
+    background: var(--color-hover);
   }
 
   .result-title {

@@ -21,12 +21,13 @@ function roll() {
 
 <style lang="scss" scoped>
 .lab-toy {
-  background: #fff;
+  background: var(--color-surface);
   border-radius: 16px;
   padding: 32px 24px;
   text-align: center;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
   margin: 24px 0;
+  transition: background-color 0.3s ease;
 }
 
 .dice-face {

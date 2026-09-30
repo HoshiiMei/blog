@@ -1,7 +1,36 @@
 <template>
   <div class="banner" :style="`background-image: url(${cover})`">
-    <div class="wave1"></div>
-    <div class="wave2"></div>
+    <!-- SVG 波浪：颜色跟随夜间模式切换（白天白色渐变 / 夜间融入深色背景） -->
+    <!-- 深色浪在后层，白色渐变浪在前层 -->
+    <div class="wave wave2" aria-hidden="true">
+      <svg class="wave-svg" viewBox="0 0 1000 80" preserveAspectRatio="none">
+        <path d="M0,52 Q250,10 500,52 T1000,52 L1000,80 L0,80 Z" fill="url(#wave2-fill)" />
+      </svg>
+      <svg class="wave-svg" viewBox="0 0 1000 80" preserveAspectRatio="none">
+        <path d="M0,52 Q250,10 500,52 T1000,52 L1000,80 L0,80 Z" fill="url(#wave2-fill)" />
+      </svg>
+    </div>
+    <div class="wave wave1" aria-hidden="true">
+      <svg class="wave-svg" viewBox="0 0 1000 80" preserveAspectRatio="none">
+        <path d="M0,40 Q125,14 250,40 T500,40 T750,40 T1000,40 L1000,80 L0,80 Z" fill="url(#wave1-fill)" />
+      </svg>
+      <svg class="wave-svg" viewBox="0 0 1000 80" preserveAspectRatio="none">
+        <path d="M0,40 Q125,14 250,40 T500,40 T750,40 T1000,40 L1000,80 L0,80 Z" fill="url(#wave1-fill)" />
+      </svg>
+    </div>
+    <!-- 渐变定义：宽高为 0，只作为填充引用，不参与布局 -->
+    <svg class="wave-defs" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="wave1-fill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" class="w1-top" />
+          <stop offset="1" class="w1-bottom" />
+        </linearGradient>
+        <linearGradient id="wave2-fill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" class="w2-top" />
+          <stop offset="1" class="w2-bottom" />
+        </linearGradient>
+      </defs>
+    </svg>
     <div class="info">
       <HeroTitle :text="hello" />
       <span class="box">
@@ -51,25 +80,31 @@ function scrollDown() {
   justify-content: center;
   align-items: center;
 
-  .wave1,
-  .wave2 {
+  .wave {
     position: absolute;
-    width: 100%;
+    left: 0;
     bottom: 0;
+    width: 200%;
+    display: flex;
+    pointer-events: none;
+    will-change: transform;
+
+    .wave-svg {
+      width: 50%;
+      height: 100%;
+      flex: none;
+      display: block;
+    }
   }
 
   .wave1 {
     height: 65px;
-    background: url(./assets/wave1.png) repeat-x;
-    background-size: auto 65px;
-    animation: wave-scroll-1 30s infinite linear;
+    animation: wave-move 30s infinite linear;
   }
 
   .wave2 {
     height: 80px;
-    background: url(./assets/wave2.png) repeat-x;
-    background-size: auto 80px;
-    animation: wave-scroll-2 20s infinite linear;
+    animation: wave-move 20s infinite linear;
   }
 
   .info {
@@ -133,14 +168,41 @@ function scrollDown() {
   }
 }
 
-@keyframes wave-scroll-1 {
-  0% { background-position-x: 0; }
-  100% { background-position-x: -997px; }
+/* 位移半个容器宽度 = 刚好一个波形周期，无缝循环 */
+@keyframes wave-move {
+  to { transform: translate3d(-50%, 0, 0); }
 }
 
-@keyframes wave-scroll-2 {
-  0% { background-position-x: 0; }
-  100% { background-position-x: -1009px; }
+/* 用户开启"减少动态效果"时停用波浪动画 */
+@media (prefers-reduced-motion: reduce) {
+  .wave1,
+  .wave2 {
+    animation: none;
+  }
+}
+
+/* ===== 波浪配色：白天沿用原图的白色渐变 + 深灰前浪，夜间融入深色背景 ===== */
+.wave-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.wave stop {
+  transition: stop-color 0.3s ease;
+}
+
+.w1-top { stop-color: #e3e7ec; }
+.w1-bottom { stop-color: #eee; }
+.w2-top { stop-color: #59606a; }
+.w2-bottom { stop-color: #454b54; }
+
+html.dark {
+  .w1-top { stop-color: #272d34; }
+  .w1-bottom { stop-color: #15171a; }
+  .w2-top { stop-color: #1a2027; }
+  .w2-bottom { stop-color: #10141a; }
 }
 
 //首页下拉箭头

@@ -2,36 +2,29 @@
   <div id="waline"></div>
 </template>
 
-<script lang="ts">
-declare const Waline: any;
-</script>
-
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useData } from 'vitepress'
-let waline: any = null
+import { init } from '@waline/client'
+import '@waline/client/style'
+
+let waline: ReturnType<typeof init> | null = null
+
 onMounted(() => {
   const serverURL = useData().site.value.themeConfig.waline
   if (!serverURL) {
-    console.error('未配置waline服务端地址')
     return
   }
-  if (import.meta.env.DEV) {
-    let el = document.querySelector<HTMLScriptElement>('script[src*="waline"]')
-    if (el) el.onload = () => init(serverURL)
-  } else {
-    init(serverURL)
-  }
-})
-const init = (serverURL: string) => {
-  waline = Waline({
+  waline = init({
     el: '#waline',
-    serverURL: serverURL,
+    serverURL,
   })
-}
+})
+
 const update = () => {
   waline?.update()
 }
+
 defineExpose({ update })
 </script>
 

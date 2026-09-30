@@ -27,18 +27,16 @@
       </span>
     </div>
     <Waline v-if="isPost" ref="waline" />
-    <TOC :data="data.page.value.headers" :active="active" />
+    <TOC :data="tocHeaders" :active="active" />
   </div>
 </template>
-
-<script lang="ts">
-declare const renderMathInElement: any;
-declare const katex: any;
-</script>
 
 <script setup lang="ts">
 import { useData, useRoute } from 'vitepress'
 import { onMounted, onUnmounted, ref, computed, watch, nextTick } from 'vue'
+import katex from 'katex'
+import renderMathInElement from 'katex/dist/contrib/auto-render.mjs'
+import 'katex/dist/katex.min.css'
 import { data as posts } from '../posts.data'
 import { throttleAndDebounce } from './utils'
 import Waline from './Waline.vue'
@@ -52,6 +50,9 @@ const waline = ref<InstanceType<typeof Waline>>()
 
 const isPost = computed(() => posts.findIndex(p => p.href == route.path.replace(base, '')) !== -1)
 const postIndex = computed(() => posts.findIndex(p => p.href == route.path.replace(base, '')))
+
+// 目录只显示到三级标题，更深层级不进导航
+const tocHeaders = computed(() => data.page.value.headers.filter(h => h.level <= 3))
 
 const date = computed(() => {
   const ts = data.page.value.frontmatter.date || data.page.value.lastUpdated
@@ -70,7 +71,6 @@ const nextPost = computed(() => {
 })
 
 const updateKatex = () => {
-  if (typeof renderMathInElement === 'undefined') return
   const el = document.querySelector('.article .content')
   if (!el) return
   renderMathInElement(el, {
@@ -89,33 +89,24 @@ watch(() => data.page.value, () => {
 })
 
 const setActiveLink = () => {
-  const headers = data.page.value.headers
+  const headers = tocHeaders.value
   if (headers.length == 0) return
   for (let i = 0; i < headers.length; i++) {
     const el = document.getElementById(headers[i].slug)
-    const rect = el?.getBoundingClientRect()!
-    if (rect.top > 200) {
-      let hash = ' '
-      if (i > 0) {
-        active.value = i - 1
-        hash = '#' + headers[i - 1].slug
-      }
-      history.replaceState(null, document.title, hash)
+    if (!el) continue
+    if (el.getBoundingClientRect().top > 200) {
+      active.value = i > 0 ? i - 1 : 0
       return
     }
   }
   active.value = headers.length - 1
-  history.replaceState(null, document.title, '#' + headers[headers.length - 1].slug)
 }
 const onScroll = throttleAndDebounce(setActiveLink, 300)
 
 onMounted(() => {
   setActiveLink()
   window.addEventListener('scroll', onScroll)
-  if (import.meta.env.DEV) {
-    let el = document.querySelector<HTMLScriptElement>('script[src*="auto-render"]')
-    if (el) el.onload = () => updateKatex()
-  }
+  nextTick(() => updateKatex())
 })
 onUnmounted(() => {
   window.removeEventListener('scroll', onScroll)
@@ -185,7 +176,7 @@ onUnmounted(() => {
       padding: 0.8em 1em;
       border-radius: 8px;
       color: var(--color-text);
-      background: #fdfbf7;
+      background: var(--color-card);
       box-shadow: 0 1px 4px rgba(0,0,0,0.05);
       font-size: 14px;
       transition: all 0.25s ease;
@@ -292,8 +283,9 @@ onUnmounted(() => {
     margin: 1.5em 0;
     padding: 0.8em 1.2em;
     border-left: 4px solid var(--color-accent);
-    background: #faf8f5;
+    background: var(--color-card-muted);
     border-radius: 0 8px 8px 0;
+    transition: background-color 0.3s ease;
     p { margin: 0.5em 0; }
   }
 
@@ -302,7 +294,8 @@ onUnmounted(() => {
     border: 1px solid var(--color-border);
     border-radius: 8px;
     overflow: hidden;
-    background: #faf8f5;
+    background: var(--color-card-muted);
+    transition: background-color 0.3s ease;
 
     summary {
       padding: 0.8em 1.2em;
@@ -313,7 +306,7 @@ onUnmounted(() => {
       transition: background 0.2s ease;
 
       &:hover {
-        background: rgba(37, 99, 235, 0.06);
+        background: var(--color-accent-soft);
       }
 
       &::marker {
@@ -374,13 +367,14 @@ onUnmounted(() => {
       border: 1px solid var(--color-border);
       padding: 10px 14px;
       text-align: left;
+      transition: background-color 0.3s ease;
     }
     th {
-      background: #f5f5f5;
+      background: var(--color-hover);
       font-weight: 600;
     }
     tr:nth-child(even) td {
-      background: #fafafa;
+      background: var(--color-card-muted);
     }
   }
 
@@ -432,7 +426,7 @@ onUnmounted(() => {
   }
 
   strong {
-    color: #1a1a1a;
+    color: var(--color-text-strong);
   }
 }
 
@@ -512,6 +506,40 @@ onUnmounted(() => {
   }
 }
 
+html.dark {
+  .custom-block {
+    &.tip {
+      background-color: #1b2a22;
+      border-color: #3eaf7c;
+    }
+
+    &.info {
+      background-color: #1e2630;
+      border-color: #476582;
+    }
+
+    &.warning {
+      border-color: #e7c000;
+      color: #ead77a;
+      background-color: #2e2a12;
+
+      .custom-block-title {
+        color: #e0c84f;
+      }
+    }
+
+    &.danger {
+      border-color: #ff5555;
+      color: #f0b6b6;
+      background-color: #311b1b;
+
+      .custom-block-title {
+        color: #e08b8b;
+      }
+    }
+  }
+}
+
 .custom-block-title {
   font-weight: bold;
 }
@@ -520,7 +548,7 @@ code {
   font-size: var(--code-font-size);
   border-radius: 4px;
   padding: 0.2em 0.4em;
-  background-color: rgba(27, 31, 35, 0.05);
+  background-color: var(--color-code-bg);
 }
 
 html {
@@ -621,5 +649,16 @@ div[class*="language-"] {
   padding-left: 16px;
   color: #858585;
   user-select: none;
+}
+
+/* ===== 夜间模式配图柔化：压低亮度，避免深色界面里截图刺眼 ===== */
+html.dark .content img {
+  filter: brightness(0.85) contrast(1.05);
+}
+
+/* ===== 复制按钮的"已复制"状态（点击后由 Layout 的全局委托接线触发） ===== */
+button.copy.copied {
+  background-image: var(--vp-icon-copied);
+  opacity: 1;
 }
 </style>

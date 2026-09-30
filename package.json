@@ -4,21 +4,21 @@
   "type": "module",
   "scripts": {
     "dev": "vitepress dev",
-    "build": "vitepress build",
+    "build": "vitepress build && node .vitepress/genFeed.mjs",
     "preview": "vitepress preview"
   },
   "dependencies": {
-    "@fontsource/merriweather": "^5.2.11",
-    "@fortawesome/fontawesome-free": "^7.2.0",
-    "feed": "^4.2.2",
-    "gray-matter": "^4.0.3",
-    "lottie-web": "^5.13.0"
+    "@fontsource/merriweather": "5.2.11",
+    "@fortawesome/fontawesome-free": "7.2.0",
+    "@waline/client": "^3.15.2",
+    "feed": "4.2.2",
+    "gray-matter": "4.0.3",
+    "katex": "^0.18.9",
+    "lottie-web": "5.13.0"
   },
   "devDependencies": {
-    "sass": "^1.99.0",
-    "sass-embedded": "^1.99.0",
-    "sharp": "^0.34.5",
-    "vitepress": "latest",
-    "vue": "latest"
+    "sass-embedded": "1.99.0",
+    "vitepress": "1.6.4",
+    "vue": "3.5.34"
   }
 }
