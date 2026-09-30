@@ -266,12 +266,13 @@ onUnmounted(() => {
   right: 0;
   margin: 0 auto;
   width: fit-content;
-  background: #fff;
+  background: var(--color-surface);
   color: var(--color-text);
   font-size: 14px;
   padding: 6px 16px;
   border-radius: 14px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
 
   // 气泡小三角
   &::before {
@@ -284,7 +285,7 @@ onUnmounted(() => {
     height: 0;
     border-left: 6px solid transparent;
     border-right: 6px solid transparent;
-    border-bottom: 6px solid #fff;
+    border-bottom: 6px solid var(--color-surface);
   }
 }
 

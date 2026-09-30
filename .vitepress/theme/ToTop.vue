@@ -53,8 +53,8 @@ onUnmounted(() => {
   width: 48px;
   height: 48px;
   border-radius: 50%; /* 正圆形 */
-  background-color: #ffffff;
-  color: #333333;
+  background-color: var(--color-surface);
+  color: var(--color-icon);
   border: none;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* 加一点现代感的立体阴影 */
 
@@ -69,7 +69,7 @@ onUnmounted(() => {
 
   /* 鼠标放上去时的交互反馈 */
   &:hover {
-    background-color: #007bff; /* 变成主题蓝 */
+    background-color: var(--color-accent); /* 变成主题蓝 */
     color: #ffffff;            /* 箭头变白 */
     transform: translateY(-5px); /* 微微向上浮起，暗示“向上”的动作 */
     box-shadow: 0 6px 16px rgba(0, 123, 255, 0.3); /* 阴影跟着变成蓝色且变大 */

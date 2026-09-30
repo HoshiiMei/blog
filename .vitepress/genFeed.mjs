@@ -3,7 +3,7 @@ import path from 'node:path'
 import { Feed } from 'feed'
 import postsData from './posts.data.mjs'
 import { resolveSiteData } from 'vitepress'
-const url = `https://blog.vuejs.org`
+const url = `https://www.hoshii.zone`
 
 genFeed()
 
@@ -17,17 +17,19 @@ async function genFeed() {
     id: url,
     link: url,
     language: siteData.lang,
-    image: 'https://vuejs.org/images/logo.png',
-    favicon: `${url}/favicon.ico`,
+    image: `${url}/images/avatar.webp`,
+    favicon: `${url}/favicon.png`,
     copyright: siteData.themeConfig.name || '-',
   })
 
   posts.forEach((post) => {
-    const file = path.resolve(cwd, `.vitepress/dist/${post.href}`)
+    const filePath = post.href.replace(/\.html$/, '/index.html')
+    const file = path.resolve(cwd, `.vitepress/dist/${filePath}`)
     const rendered = fs.readFileSync(file, 'utf-8')
     const content = rendered.match(
       /<main>([\s\S]*)<\/main>/
     )
+    if (!content) return
 
     feed.addItem({
       title: post.title,

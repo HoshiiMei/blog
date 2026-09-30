@@ -54,6 +54,9 @@ function getPost(md, file, postDir, asFeed = false) {
   const { data } = matter(src)
 
   if (!data.title) return null
+  if (!data.date) {
+    console.warn(`⚠️  posts/${file} 缺少 frontmatter date，将使用文件修改时间（部署后可能不稳定）`)
+  }
 
   const href = file.endsWith('/index.md')
     ? `posts/${file.replace(/\/index\.md$/, '.html')}`
@@ -85,6 +88,6 @@ function checkTags() {
   if (!fs.existsSync(dir)) {
     console.log('Creating page: /tags')
     fs.mkdirSync(dir)
-    fs.writeFileSync('tags/index.md', '---\ntitle: 标签\nlayout:tags\n---\n')
+    fs.writeFileSync('tags/index.md', '---\ntitle: 标签\nlayout: tags\n---\n')
   }
 }

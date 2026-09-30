@@ -45,14 +45,14 @@ layout: lab
 }
 
 .toy-card {
-  background: #fff;
+  background: var(--color-surface);
   border-radius: 16px;
   padding: 28px 20px;
   text-align: center;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
   text-decoration: none;
   color: inherit;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s;
 }
 
 .toy-card:hover {

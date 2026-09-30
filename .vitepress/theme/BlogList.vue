@@ -15,7 +15,7 @@
             <div class="tags">
               <template v-if="click">
                 <a v-for="t in p.tags" href="#" @click="click(t)">
-                  <i class="fa-regular fa-tag"></i>
+                  <i class="fa-solid fa-tag"></i>
                   {{ t }}
                 </a>
               </template>
@@ -44,8 +44,9 @@
 
 <script setup lang="ts">
 import { type PostData } from '../posts.data'
-import { useData } from 'vitepress'
+import { useData, useRouter } from 'vitepress'
 const base = useData().site.value.base
+const router = useRouter()
 const { posts, click = null } = defineProps<{
   posts: PostData[]
   click?: (tag: string) => void
@@ -62,7 +63,8 @@ function coverStyle(p: PostData) {
 }
 
 function goPost(url: string) {
-  window.location.href = url
+  // 使用 VitePress 路由跳转，避免整页刷新，让页面切换动画生效
+  router.go(url)
 }
 </script>
 
@@ -104,9 +106,9 @@ function goPost(url: string) {
     // ===== 旧 padding: 24px → 改成 0，内边距由 .info 管理 =====
     padding: 0;
     border-radius: 10px;
-    background: #fdfbf7;
+    background: var(--color-card);
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
     overflow: hidden;
 
     &:hover {
@@ -236,7 +238,7 @@ function goPost(url: string) {
     font-weight: 700;
     font-size: 12px;
     padding-top: 8px;
-    color: #aaa;
+    color: var(--color-gray-2);
     margin-bottom: 0px;
   }
 
@@ -272,7 +274,7 @@ function goPost(url: string) {
     .card {
       margin: 0 0 1px 0;
       border-radius: 0;
-      background: #fdfbf7;
+      background: var(--color-card);
       box-shadow: none;
 
       &:hover {
